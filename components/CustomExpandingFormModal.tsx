@@ -73,7 +73,7 @@ export function ExpandingFormModal({
             </div>
           ) : (
             <motion.div 
-            transition={{duration: 0.5}}
+            transition={{duration: 0}}
             className="bg-transparent transition-all duration-400 h-full rounded-2xl p-6 w-full">
               <div>
                 <span className="text-2xl font-semibold">
