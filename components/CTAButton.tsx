@@ -11,7 +11,7 @@ export default function CTAButton() {
   const [opened, setOpened] = useState(false);
   return (
     <div className="fixed z-[999] bottom-3 left-1/2 -translate-x-1/2  px-4">
-      <LiquidGlass open={opened} className={`p-1`}>
+      <div className={`p-1 bg-white ${opened ? "rounded-xl ":"rounded-full"}`}>
         <motion.div
           layout
           transition={{ layout: { duration: 0.5, ease: "easeOut" } }}
@@ -46,7 +46,7 @@ export default function CTAButton() {
             </Button>
           </div>
         </motion.div>
-      </LiquidGlass>
+      </div>
     </div>
   );
 }
