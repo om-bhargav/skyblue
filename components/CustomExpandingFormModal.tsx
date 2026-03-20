@@ -25,7 +25,9 @@ export function ExpandingFormModal({
           className="w-full h-full"
         >
           {saved ? (
-            <div className="bg-transparent transition-all duration-400 h-full rounded-2xl p-6 md:p-8 w-full overflow-y-auto">
+            <motion.div 
+            transition={{duration: 0.4, ease:"easeInOut"}}
+            className="bg-transparent transition-all duration-400 h-full rounded-2xl p-6 md:p-8 w-full overflow-y-auto">
               <div>
                 <span className="text-2xl font-semibold">
                   Plan Your Flight
@@ -70,7 +72,7 @@ export function ExpandingFormModal({
 
                 <Textarea placeholder="Message" className="min-h-[120px] text-black placeholder:text-black border-foreground" />
               </div>
-            </div>
+            </motion.div>
           ) : (
             <motion.div 
             transition={{duration: 0}}

@@ -29,7 +29,6 @@ export default function Home() {
 
   const [section, setSection] = useState(1);
 
-  // 🔥 Map scroll progress → section index
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     if (v < 0.14) setSection(1);
     else if (v < 0.28) setSection(2);

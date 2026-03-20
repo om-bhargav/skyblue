@@ -11,17 +11,19 @@ export default function CTAButton() {
   const [opened, setOpened] = useState(false);
   return (
     <div className="fixed z-[999] bottom-3 left-1/2 -translate-x-1/2  px-4">
-      <div className={`p-1 bg-white ${opened ? "rounded-xl ":"rounded-full"}`}>
+      <div
+        className={`p-1 bg-white ${opened ? "rounded-xl " : "rounded-full"}`}
+      >
         <motion.div
           layout
-          transition={{ layout: { duration: 0.5, ease: "easeOut" } }}
+          transition={{ layout: { duration: 0.5, ease: "easeInOut" } }}
           className="flex flex-col justify-center overflow-hidden items-center gap-2"
           animate={{
-            width: opened ? (saved ? "72rem" : "36rem") : "auto",
-            height: opened ? (saved ? "80vh" : "50vh") : "auto",
+            width: opened ? (saved ? "72rem" : "36rem") : "280px",
+            height: opened ? (saved ? "80vh" : "50vh") : "60px",
           }}
         >
-          <ExpandingFormModal opened={opened} saved={saved}/>
+          <ExpandingFormModal opened={opened} saved={saved} />
           <div
             onClick={() => {
               if (!opened) {
@@ -35,7 +37,9 @@ export default function CTAButton() {
                 setOpened(false);
               }
             }}
-            className={`flex items-center gap-2 flex-1 max-h-[50px] h-full ${opened || saved ? "absolute bottom-2":""}`}
+            className={`flex items-center gap-2 flex-1 max-h-[50px] h-full ${
+              opened || saved ? "absolute bottom-2" : ""
+            }`}
           >
             <Button className="max-md:text-xs whitespace-nowrap px-5 py-3.5">
               Plan a flight
