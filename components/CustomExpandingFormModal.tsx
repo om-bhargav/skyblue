@@ -8,6 +8,7 @@ import { Textarea } from "./ui/textarea";
 import { PlanFlight } from "@/app/actions/AsanaActions";
 import SubmitButton from "./SubmitButton";
 import toast from "react-hot-toast";
+import { X } from "lucide-react";
 const flightHoursOptions = [
   "How often do you fly privately?",
   "1-25 hours",
@@ -80,11 +81,13 @@ export function ExpandingFormModal({
   handleNext,
   opened,
   saved,
+  handleClose,
 }: {
   children?: React.ReactNode;
   opened: boolean;
   saved: boolean;
   handleNext: any;
+  handleClose: any;
 }) {
   const [form, setForm] = useState({
     title: "Mr.",
@@ -144,10 +147,15 @@ export function ExpandingFormModal({
           {saved ? (
             <motion.div
               transition={{ duration: 0.4, ease: "easeInOut" }}
-              className="bg-transparent transition-all duration-400 h-full rounded-2xl p-6 md:p-8 w-full overflow-y-auto"
+              className="bg-transparent transition-all duration-400 h-full rounded-2xl p-6 py-10 md:p-8 w-full overflow-y-auto"
             >
-              <div>
+              <div className="flex justify-between items-center">
                 <span className="text-2xl font-semibold">Plan Your Flight</span>
+                {opened && (
+                  <Button type="button" size={"icon"} onClick={handleClose}>
+                    <X />
+                  </Button>
+                )}
               </div>
 
               <div className="space-y-6 mt-6">
@@ -190,7 +198,9 @@ export function ExpandingFormModal({
                     name="state"
                     className="h-10 rounded-md border shadow-md bg-transparent px-3 text-sm"
                     value={form.state}
-                    onChange={(e) => setForm((prev)=>({...prev,state: e.target.value}))}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, state: e.target.value }))
+                    }
                   >
                     {stateOptions.map((option, index) => (
                       <option key={index} value={index === 0 ? "" : option}>
@@ -276,8 +286,13 @@ export function ExpandingFormModal({
               transition={{ duration: 0 }}
               className="bg-transparent transition-all duration-400 h-full rounded-2xl p-6 w-full"
             >
-              <div>
+              <div className="flex justify-between items-center">
                 <span className="text-2xl font-semibold">Book Flight</span>
+                                {opened && (
+                  <Button type="button" size={"icon"} onClick={handleClose}>
+                    <X />
+                  </Button>
+                )}
               </div>
 
               <div className="space-y-5 mt-4">

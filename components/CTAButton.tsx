@@ -33,38 +33,40 @@ export default function CTAButton() {
         <motion.div
           layout
           transition={{ layout: { duration: 0.5, ease: "easeInOut" } }}
-          className="flex flex-col relative justify-center overflow-hidden items-center gap-2"
+          className="flex flex-col relative justify-center overflow-auto items-center gap-2 max-w-[95vw] prevent"
           animate={{
             width: opened
               ? saved
-                ? "72rem"
-                : "36rem"
+                ? isMobile
+                  ? "95vw"
+                  : "72rem"
+                : isMobile
+                  ? "90vw"
+                  : "36rem"
               : isMobile
-              ? "13rem"
-              : "17rem",
+                ? "55vw"
+                : "17rem",
+
             height: opened
               ? saved
-                ? "80vh"
-                : "50vh"
+                ? isMobile
+                  ? "90vh"
+                  : "85vh"
+                : isMobile
+                  ? "65vh"
+                  : "55vh"
               : isMobile
-              ? "2.5rem"
-              : "3.7rem",
+                ? "2.8rem"
+                : "3.7rem",
           }}
+                    data-lenis-prevent
+          data-lenis-prevent-touch
         >
-          {opened && (
-            <SButton
-              type="button"
-              size={"icon"}
-              onClick={handleClose}
-              className="absolute right-5 top-5"
-            >
-              <X />
-            </SButton>
-          )}
           <ExpandingFormModal
             handleNext={handleNext}
             opened={opened}
             saved={saved}
+            handleClose={handleClose}
           />
           <div
             onClick={() => {
@@ -73,9 +75,7 @@ export default function CTAButton() {
                 return;
               }
             }}
-            className={`flex items-center gap-2 flex-1 max-h-[50px] h-full ${
-              opened || saved ? "absolute bottom-2" : ""
-            }`}
+            className={`flex items-center gap-2 flex-1 max-h-[50px] h-full `}
           >
             <Button className="max-md:text-xs whitespace-nowrap px-5 py-3.5">
               Plan a flight
