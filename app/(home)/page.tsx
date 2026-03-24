@@ -45,6 +45,7 @@ export default function Home() {
           });
         })
       );
+      await new Promise((resolve,reject)=>setTimeout(resolve,1000));
       setLoaded(true);
     };
     loadAssets();
