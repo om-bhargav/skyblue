@@ -53,8 +53,8 @@ export default function Branding1({ scrollProgress }: { scrollProgress: any }) {
   const specifications = aircraftDetails.slice(6);
   const isMobile = useMobile();
   useMotionValueEvent(scrollProgress, "change", (v: number) => {
-    if (v < 0.55) setSection(4);
-    else if (v < 0.6) setSection(5);
+    if (v < 0.6) setSection(4);
+    else if (v < 0.65) setSection(5);
     else setSection(6);
   });
   return (

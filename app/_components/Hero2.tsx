@@ -60,7 +60,7 @@ function Hero2() {
   });
   return (
     <div 
-    className="min-h-screen relative flex items-center justify-center" data-lenis-prevent data-lenis-prevent-wheel>
+    className="min-h-screen relative flex items-center justify-center prevent">
       <motion.img
         src={PlaneWindow.src}
         initial={{ scale: 5 }}
@@ -134,7 +134,7 @@ function Hero2() {
         className="w-full overflow-scroll"
         loaderClassName="mx-auto max-w-[1200px] place-items-center w-full mt-12 min-h-[400px]"
       >
-        <div className="mx-auto md:pt-20 max-w-[1200px] max-h-[600px] overflow-auto overflow-scroll max-md:py-2 grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-10 md:gap-x-20 w-full h-full items-center" data-lenis-prevent data-lenis-prevent-wheel>
+        <div className="mx-auto md:pt-20 max-w-[1200px] max-h-[600px] overflow-y-auto max-md:py-2 grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-10 md:gap-x-20 w-full h-full items-center prevent"  data-lenis-prevent data-lenis-prevent-touch>
           {features.map((feature: any, index: number) => {
             return <FeatureCard key={index} index={index} feature={feature} />;
           })}

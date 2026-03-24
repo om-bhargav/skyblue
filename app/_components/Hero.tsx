@@ -45,7 +45,7 @@ function Hero() {
              animate={{ opacity: 1, y: 0, filter: "brightness(105%)" }}
              exit={{opacity: 0}}
              transition={{ duration: 1, ease: "easeOut" }}
-             className="absolute max-md:object-cover bottom-0 h-150 w-full"
+             className="absolute max-md:object-cover bottom-0 max-md:h-200 md:h-150 w-full"
            />
          </div>
        </div>
