@@ -20,7 +20,7 @@ const Footer = dynamic(() => import("@/components/Footer"));
 import Loader from "@/components/Loader";
 import { useEffect } from "react";
 
-const images = [background.src, SunnyDay.src];
+let images = [background.src, SunnyDay.src];
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -38,6 +38,7 @@ export default function Home() {
             const img = new Image();
             img.src = image;
             img.onload = resolve;
+            return img;
           });
         })
       );
@@ -78,7 +79,7 @@ export default function Home() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                src={[3, 4].includes(section) ? SunnyDay.src : background.src}
+                src={[3, 4].includes(section) ? images[1] : images[0]}
                 className="w-full h-full absolute inset-0 -z-10 object-cover"
                 transition={{ duration: 1, ease: "easeInOut" }}
               />
