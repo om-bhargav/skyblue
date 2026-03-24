@@ -24,7 +24,15 @@ const Footer = dynamic(() => import("@/components/Footer"));
 import Loader from "@/components/Loader";
 import { useEffect } from "react";
 
-let images = [background.src, SunnyDay.src, cloud.src, PlaneWindow.src,airoplane.src,"https://picsum.photos/1080/1080",plane.src];
+let images = [
+  background.src,
+  SunnyDay.src,
+  cloud.src,
+  PlaneWindow.src,
+  airoplane.src,
+  "https://picsum.photos/1080/1080",
+  plane.src,
+];
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -38,16 +46,21 @@ export default function Home() {
     const loadAssets = async () => {
       await Promise.all(
         images.map((image) => {
-          new Promise((resolve) => {
+          return new Promise<void>((resolve, reject) => {
             const img = new Image();
             img.src = image;
-            img.onload = resolve;
+
+            img.onload = () => resolve();
+            img.onerror = () => reject(); // good practice
           });
         })
       );
-      await new Promise((resolve,reject)=>setTimeout(resolve,3000));
+
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
       setLoaded(true);
     };
+
     loadAssets();
   }, []);
   const [section, setSection] = useState(1);
@@ -114,7 +127,12 @@ export default function Home() {
           ref={(el) => (sectionRefs.current[0] = el) as any}
           className="min-h-[100vh]"
         />
-        <section className="prevent min-h-[120vh]" ref={(el) => (sectionRefs.current[1] = el) as any} data-lenis-prevent data-lenis-prevent-touch/>
+        <section
+          className="prevent min-h-[120vh]"
+          ref={(el) => (sectionRefs.current[1] = el) as any}
+          data-lenis-prevent
+          data-lenis-prevent-touch
+        />
         <section
           ref={(el) => (sectionRefs.current[2] = el) as any}
           className="min-h-[130vh]"
