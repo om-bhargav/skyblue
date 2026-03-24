@@ -12,9 +12,9 @@ import background from "@/assets/sky-bg.png";
 import SunnyDay from "@/assets/sunny-day.png";
 
 import Hero from "@/app/_components/Hero";
-import Hero2 from "./_components/Hero2";
-import Features from "./_components/Features";
-import Branding1 from "./_components/Branding1";
+import Hero2 from "../_components/Hero2";
+import Features from "../_components/Features";
+import Branding1 from "../_components/Branding1";
 import Faq from "@/app/_components/Faq";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";

@@ -23,10 +23,7 @@ export default function RootLayout({
       <body
         className={`${dmSans.className} ${streach.variable} ${roxter.variable} ${syne.variable} antialiased relative`}
       >
-        <SmoothScroll>
-          <Toaster/>
           {children}
-        </SmoothScroll>
       </body>
     </html>
   );

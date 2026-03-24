@@ -8,6 +8,23 @@ export default function SmoothScroll({
 }: {
   children: React.ReactNode;
 }) {
+    useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout>;
+
+    const handleScroll = () => {
+      clearTimeout(timeout);
+
+      timeout = setTimeout(() => {
+      }, 200);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timeout);
+    };
+  }, []);
   useEffect(() => {
     const lenis = new Lenis({
       lerp: 0.1, // Smoothness intensity
