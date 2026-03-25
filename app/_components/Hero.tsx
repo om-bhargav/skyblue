@@ -3,16 +3,12 @@
 import cloud from "@/assets/cloud.png";
 import { STYLED_SITE_NAME } from "@/lib/constants";
 import {
-  motion,
-  useAnimation,
-  useInView,
-  useTransform
+  motion
 } from "framer-motion";
 function Hero() {
   const viewport = { once: false};
   return (
     <div className="h-screen overflow-hidden" >
- 
        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
          <div className="relative">
            <motion.h1

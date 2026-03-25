@@ -1,6 +1,6 @@
 "use client";
 import { fetcher } from "@/lib/constants";
-import { motion, useMotionValueEvent } from "framer-motion";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import React, { useState } from "react";
 import useSWR from "swr";
 import { FAQCard, FAQCardSkeleton } from "./FaqCard";
@@ -52,17 +52,21 @@ export function transformFaqs(tasks: any[]) {
     return obj;
   });
 }
-function Faq({scrollProgress}: {scrollProgress: any}) {
+function Faq({ref}:{ref: any}) {
   const [isOpen, setIsOpen] = useState<null | number>(null);
   const [expand, setExpand] = useState(false);
   const [slide, setSlide] = useState(false);
   const {data,isLoading,error} = useSWR("/api/faqs",fetcher);
   const faqs = data?.data ? transformFaqs(data.data) : [];
-  useMotionValueEvent(scrollProgress, "change", (v: number) => {
-    if (v > 0.78) setExpand(true);
+  const {scrollYProgress} = useScroll({
+    target: ref,
+    offset: ["start start","end start"]
+  })
+  useMotionValueEvent(scrollYProgress, "change", (v: number) => {
+    if (v > 0.84) setExpand(true);
     else setExpand(false);
 
-    if (v > 0.83) setSlide(true);
+    if (v > 0.88) setSlide(true);
     else setSlide(false);
   });
 

@@ -1,19 +1,21 @@
 "use client";
 
-import { useRef, useState } from "react";
+import airoplane from "@/assets/airoplane.png";
+import cloud from "@/assets/cloud.png";
+import PlaneWindow from "@/assets/plane-window.png";
+import plane from "@/assets/plane.png";
+import background from "@/assets/sky-bg.png";
+import SunnyDay from "@/assets/sunny-day.png";
+import Loader from "@/components/Loader";
 import {
   AnimatePresence,
   motion,
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
-import background from "@/assets/sky-bg.png";
-import SunnyDay from "@/assets/sunny-day.png";
-import PlaneWindow from "@/assets/plane-window.png";
 import dynamic from "next/dynamic";
-import airoplane from "@/assets/airoplane.png";
-import cloud from "@/assets/cloud.png";
-import plane from "@/assets/plane.png";
+import { useEffect, useRef, useState } from "react";
+import CTAButton from "@/components/CTAButton";
 const Navbar = dynamic(() => import("@/components/Navbar"));
 const Hero = dynamic(() => import("@/app/_components/Hero"));
 const Hero2 = dynamic(() => import("../_components/Hero2"));
@@ -21,8 +23,6 @@ const Features = dynamic(() => import("../_components/Features"));
 const Branding1 = dynamic(() => import("../_components/Branding1"));
 const Faq = dynamic(() => import("@/app/_components/Faq"));
 const Footer = dynamic(() => import("@/components/Footer"));
-import Loader from "@/components/Loader";
-import { useEffect } from "react";
 
 let images = [
   background.src,
@@ -35,10 +35,23 @@ let images = [
 ];
 
 export default function Home() {
+  const heroRef = useRef<HTMLElement | null>(null);
+  const hero2Ref = useRef<HTMLElement | null>(null);
+  const featuresRef = useRef<HTMLElement | null>(null);
+  const brandingRef = useRef<HTMLElement | null>(null);
+  const faqRef = useRef<HTMLElement | null>(null);
+  const footerRef = useRef<HTMLElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  const sectionRefs = [
+    heroRef,
+    hero2Ref,
+    featuresRef,
+    brandingRef,
+    faqRef,
+    footerRef,
+  ];
   const [loaded, setLoaded] = useState(false);
-  const { scrollYProgress } = useScroll({
+  const { scrollY } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
@@ -63,97 +76,86 @@ export default function Home() {
 
     loadAssets();
   }, []);
-  const [section, setSection] = useState(1);
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const triggerLine = y + window.innerHeight * 0.4;
 
-  const totalSections = 6;
+    let newIndex = -1;
 
-  // 🔥 Dynamic section detection
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const current = Math.min(
-      totalSections,
-      Math.max(1, Math.ceil(v * totalSections))
-    );
-    setSection(current);
+    sectionRefs.forEach((ref, index) => {
+      const section = ref.current;
+      if (!section) return;
+
+      const top = section.offsetTop;
+      const bottom = top + section.offsetHeight;
+
+      if (triggerLine >= top && triggerLine < bottom) {
+        newIndex = index;
+      }
+    });
+
+    if (newIndex !== -1) {
+      setSection(newIndex + 1);
+    }
   });
-
+  const [section, setSection] = useState(1);
   return loaded ? (
     <>
+      {section !== 6 && <CTAButton />}
       <Navbar section={section} />
-      <div ref={containerRef} className="relative">
-        {/* 🔥 Sticky Background */}
-        <div
-          className={`sticky top-0 min-h-screen ${
-            section === 5 || section === 6
-              ? "overflow-y-auto"
-              : "overflow-hidden"
-          }`}
-        >
-          <AnimatePresence mode="sync">
-            {section !== 5 && (
-              <motion.img
-                key={[3, 4].includes(section) ? "sunny" : "sky"}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                src={[3, 4].includes(section) ? images[1] : images[0]}
-                className="w-full h-full absolute inset-0 -z-10 object-cover"
-                transition={{ duration: 1, ease: "easeInOut" }}
-              />
-            )}
-          </AnimatePresence>
-
+      <AnimatePresence mode="sync">
+        {section !== 5 && (
+          <motion.img
+            key={[3, 4].includes(section) ? "sunny" : "sky"}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            src={[3, 4].includes(section) ? images[1] : images[0]}
+            className="w-full max-h-screen h-full fixed inset-0 -z-10 object-cover"
+            transition={{ duration: 1, ease: "easeInOut" }}
+          />
+        )}
+      </AnimatePresence>
+      <div ref={containerRef}>
+        {/* Sticky UI */}
+        <div className="sticky top-0 overflow-hidden">
           <AnimatePresence mode="popLayout">
             <motion.div
               key={section}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="w-full h-full absolute inset-0"
+              transition={{ duration: 0.8 }}
+              className="w-full h-full"
             >
               {section === 1 && <Hero />}
-              {section === 2 && <Hero2 />}
+              {section === 2 && <Hero2 ref={hero2Ref} />}
               {section === 3 && <Features />}
-              {section === 4 && <Branding1 scrollProgress={scrollYProgress} />}
-              {section === 5 && <Faq scrollProgress={scrollYProgress} />}
+              {section === 4 && <Branding1 ref={brandingRef} />}
+              {section === 5 && <Faq ref={faqRef} />}
               {section === 6 && <Footer />}
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* 🔥 Real Sections (dynamic height) */}
+        {/* 🔥 Scroll spacers (define heights) */}
+        <section ref={sectionRefs[0] as any} className="h-[15vh]" />
         <section
-          ref={(el) => (sectionRefs.current[0] = el) as any}
-          className="min-h-[100vh]"
-        />
-        <section
-          className="prevent min-h-[120vh]"
-          ref={(el) => (sectionRefs.current[1] = el) as any}
+          ref={sectionRefs[1] as any}
+          className="min-h-[180vh] prevent"
           data-lenis-prevent
           data-lenis-prevent-touch
+          data-lenis-prevent-wheel
         />
-        <section
-          ref={(el) => (sectionRefs.current[2] = el) as any}
-          className="min-h-[130vh]"
-        />
-        <section
-          ref={(el) => (sectionRefs.current[3] = el) as any}
-          className="min-h-[130vh]"
-        />
-        <section
-          ref={(el) => (sectionRefs.current[4] = el) as any}
-          className="min-h-[450vh]"
-        />
-        <section
-          ref={(el) => (sectionRefs.current[5] = el) as any}
-          className="min-h-[160vh]"
-        />
+        <section ref={sectionRefs[2] as any} className="min-h-[130vh]" />
+        <section ref={sectionRefs[3] as any} className="min-h-[330vh]" />
+        <section ref={sectionRefs[4] as any} className="min-h-[130vh]" />
+        <section ref={sectionRefs[5] as any} className="min-h-[120vh]" />
       </div>
     </>
   ) : (
     <>
-    <Loader />
-    <div ref={containerRef}></div>
+      <Loader />
+      <div ref={containerRef}></div>
     </>
   );
 }

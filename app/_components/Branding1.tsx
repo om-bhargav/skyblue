@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { dmSans, roxter, streach, syne } from "@/utils/fonts";
-import { motion, useMotionValueEvent } from "framer-motion";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import airoplane from "@/assets/airoplane.png";
 import { SITE_NAME } from "@/lib/constants";
 import { Separator } from "@/components/ui/separator";
@@ -45,20 +45,22 @@ const aircraftDetails = [
     value: "1.92 m²",
   },
 ];
-export default function Branding1({ scrollProgress }: { scrollProgress: any }) {
+export default function Branding1({ref}:{ref: any}) {
   const [section, setSection] = useState(4);
   const containerRef = useRef<HTMLDivElement>(null);
   const firstDetails = aircraftDetails.slice(0,6);
   const specifications = aircraftDetails.slice(6);
-  const isMobile = useMobile();
-  useMotionValueEvent(scrollProgress, "change", (v: number) => {
-    if (v < 0.6) setSection(4);
-    else if (v < 0.65) setSection(5);
+  const {scrollYProgress} = useScroll({
+    target: ref,
+    offset: ["start start","end start"]
+  });
+  useMotionValueEvent(scrollYProgress, "change", (v: number) => {
+    if (v < 0.3) setSection(4);
+    else if (v < 0.6) setSection(5);
     else setSection(6);
   });
   return (
     <div
-      ref={containerRef}
       className={`h-screen flex items-center py-10 justify-center w-full relative md:overflow-hidden ${section>4 ? "max-md:overflow-auto":""}`}
        data-lenis-prevent data-lenis-prevent-wheel
     >

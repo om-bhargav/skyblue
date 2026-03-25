@@ -6,7 +6,6 @@ import CTAButton from "@/components/CTAButton";
 export default function layout({ children }: React.PropsWithChildren) {
   return (
     <SmoothScroll>
-      <CTAButton/>
       <Toaster />
       {children}
     </SmoothScroll>

@@ -31,7 +31,7 @@ export default function CTAButton() {
         }`}
       >
         <motion.div
-          layout
+          layout={false}
           transition={{ layout: { duration: 0.5, ease: "easeInOut" } }}
           className="flex flex-col relative justify-center overflow-auto items-center gap-2 max-w-[95vw] prevent"
           animate={{
@@ -53,13 +53,13 @@ export default function CTAButton() {
                   ? "90vh"
                   : "85vh"
                 : isMobile
-                  ? "65vh"
+                  ? "62vh"
                   : "55vh"
               : isMobile
                 ? "2.8rem"
                 : "3.7rem",
           }}
-                    data-lenis-prevent
+          data-lenis-prevent
           data-lenis-prevent-touch
         >
           <ExpandingFormModal

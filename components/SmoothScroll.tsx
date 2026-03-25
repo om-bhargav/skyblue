@@ -18,46 +18,32 @@ export default function SmoothScroll({
       }, 1000);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll,{passive: false});
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
       clearTimeout(timeout);
     };
   }, []);
-
     useEffect(() => {
     const lenis = new Lenis({
-      lerp: 0.1, // Smoothness intensity
-      duration: 0.8,
-      easing: (t: number) => 1 - Math.pow(1 - t, 4), // Quartic easeOut
-      wheelMultiplier: 1,
-      touchMultiplier: 1,
+      lerp: 0.08, // smoothness
+      duration: 1.2,
       smoothWheel: true,
-      prevent: (node)=>{
-        return !!node.closest(".prevent");
-      }
+      wheelMultiplier: 0.8,
+      touchMultiplier: 1,
+      easing: (t: number) => 1 - Math.pow(1 - t, 4),
+
+      // 🔥 IMPORTANT: prevent logic
+      prevent: (node) => {
+        return !!node.closest("[data-lenis-prevent]");
+      },
     });
 
-    const MAX_DELTA = 60; // 👈 max pixels per scroll
+    // expose globally (for dynamic updates)
+    (window as any).lenis = lenis;
 
-    // Override wheel behavior
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-
-      let delta = e.deltaY;
-
-      // 🔥 Clamp the scroll amount
-      if (delta > MAX_DELTA) delta = MAX_DELTA;
-      if (delta < -MAX_DELTA) delta = -MAX_DELTA;
-
-      lenis.scrollTo(lenis.scroll + delta, {
-        immediate: true,
-      });
-    };
-
-    window.addEventListener("wheel", onWheel);
-
+    // RAF loop
     function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -65,8 +51,8 @@ export default function SmoothScroll({
 
     requestAnimationFrame(raf);
 
+    // cleanup
     return () => {
-      window.removeEventListener("wheel", onWheel);
       lenis.destroy();
     };
   }, []);

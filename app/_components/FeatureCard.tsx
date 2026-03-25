@@ -38,7 +38,7 @@ export function FeatureCard({
       initial={{ x: -200 }}
       whileInView={{ x: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: 1, ease: "easeInOut" }}
+      transition={{ duration: 0.6, delay: 0.4, ease: "easeInOut" }}
       whileHover={{ scale: 1.03 }}
     >
       <motion.div

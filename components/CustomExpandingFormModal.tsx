@@ -147,6 +147,7 @@ export function ExpandingFormModal({
           {saved ? (
             <motion.div
               transition={{ duration: 0.4, ease: "easeInOut" }}
+              viewport={{once: true}}
               className="bg-transparent transition-all duration-400 h-full rounded-2xl p-6 py-10 md:p-8 w-full overflow-y-auto"
             >
               <div className="flex justify-between items-center">
