@@ -1,48 +1,44 @@
 "use client";
-import { useEffect } from "react";
+
 import Lenis from "lenis";
+import { useEffect } from "react";
 
-export default function SmoothScroll({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    const lenis = new Lenis({
-      lerp: 0.08,
-      duration: 1.2,
-      smoothWheel: true,
-      wheelMultiplier: 0.8,
-      touchMultiplier: 1,
-      easing: (t: number) => 1 - Math.pow(1 - t, 4),
-      prevent: (node) => !!node.closest("[data-lenis-prevent]"),
-    });
+export default function SmoothScroll({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
 
-    // 🔥 throttle lock
-    let isLocked = false;
+  //   useEffect(() => {
+  //   const lenis = new Lenis({
+  //     lerp: 0.05, // smoothness
+  //     duration: 0.1,
+  //     smoothWheel: true,
+  //     wheelMultiplier: 0.5,
+  //     touchMultiplier: 0.6,
+  //     easing: (t: number) => 1 - Math.pow(1 - t, 4),
 
-    lenis.on("scroll", () => {
-      if (isLocked) return;
+  //     // 🔥 IMPORTANT: prevent logic
+  //     prevent: (node) => {
+  //       return !!node.closest("[data-lenis-prevent]");
+  //     },
+  //   });
 
-      // ✅ your logic (count scroll once)
-      console.log("Counted scroll");
+  //   // expose globally (for dynamic updates)
+  //   (window as any).lenis = lenis;
 
-      isLocked = true;
+  //   // RAF loop
+  //   function raf(time: number) {
+  //     lenis.raf(time);
+  //     requestAnimationFrame(raf);
+  //   }
 
-      setTimeout(() => {
-        isLocked = false;
-      }, 5000);
-    });
+  //   requestAnimationFrame(raf);
 
-    (window as any).lenis = lenis;
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
-
-    return () => {
-      lenis.destroy();
-    };
-  }, []);
-
+  //   // cleanup
+  //   return () => {
+  //     lenis.destroy();
+  //   };
+  // }, []);
   return <>{children}</>;
 }

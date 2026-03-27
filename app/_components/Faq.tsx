@@ -36,32 +36,25 @@ function Faq({ ref }: { ref: any }) {
   const [slide, setSlide] = useState(false);
   const { data, isLoading, error } = useSWR("/api/faqs", fetcher);
   const faqs = data?.data ? transformFaqs(data.data) : [];
-  const {scrollYProgress} = useScroll({
+  const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start","end end"]
+    offset: ["start start", "end end"],
   });
-  useMotionValueEvent(scrollYProgress, "change", (v: number) => {
-    if (v >= 1) setExpand(true);
-    else setExpand(false);
-  });
-
   return (
     <div className="flex h-screen flex-col items-center py-18 md:pt-20 px-3 md:px-6 gap-6">
       {/* Top Section */}
-      <div className="max-w-[1300px] overflow-auto md:h-[460px] w-full flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+      <div className="max-w-[1300px] overflow-auto w-full flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
         {/* FAQ */}
         <div className="w-full lg:w-[55%]">
+          <div className="sticky top-0 bg-background">
           <h1 className="uppercase font-roxter text-2xl md:text-4xl text-gray-300">
             skyblue
           </h1>
           <p className="uppercase font-syne text-xs md:text-base text-gray-600 font-bold mt-1">
             A BETTER WAY TO FLY
           </p>
-
-          <div className="flex flex-col  gap-4 mt-6">
-            {/* {faqData.map((item, i) => (
-              <FAQCard item={item} i={i} isOpen={isOpen} setIsOpen={setIsOpen}/>
-            ))} */}
+          </div>
+          <div className="flex flex-col gap-4 mt-6">
             <ErrorLoading
               error={error}
               emptyMessage="No Faqs found"
@@ -72,17 +65,24 @@ function Faq({ ref }: { ref: any }) {
               loadingRows={4}
               loadingCols={1}
             >
-              {faqs.map((faq, i) => {
-                return (
-                  <FAQCard
-                    key={i}
-                    isOpen={isOpen}
-                    setIsOpen={setIsOpen}
-                    i={i}
-                    item={faq}
-                  />
-                );
-              })}
+              <div
+                className="max-h-[600px] overflow-auto"
+                data-lenis-prevent
+                data-lenis-prevent-touch
+                data-lenis-prevent-wheel
+              >
+                {faqs.map((faq, i) => {
+                  return (
+                    <FAQCard
+                      key={i}
+                      isOpen={isOpen}
+                      setIsOpen={setIsOpen}
+                      i={i}
+                      item={faq}
+                    />
+                  );
+                })}
+              </div>
             </ErrorLoading>
           </div>
         </div>
@@ -90,22 +90,7 @@ function Faq({ ref }: { ref: any }) {
         {/* Image */}
         <motion.div
           layout
-          initial={{ bottom: 0, scale: 2 }}
-          animate={{
-            scale: expand ? 1.5 : 1,
-            width: expand ? "100%" : "45%",
-            ...(expand
-              ? { height: "100%", bottom: 0, top: "80px" }
-              : { overflow: "hidden" }),
-          }}
-          style={{ transformOrigin: "center center" }}
-          exit={{y: -400}}
-          transition={{ duration: 0.4 }}
-          className={`${
-            !expand && "max-md:hidden md:max-h-[450px]"
-          } w-full w-[45%] flex-1 overflow-hidden flex justify-center items-center ${
-            expand ? "absolute right-0 inset-0 z-50 w-full" : "relative"
-          }`}
+          className="hidden md:block overflow-hidden  sticky! right-0 top-20 md:max-w-[550px]"
         >
           <div className="w-full h-full bg-gray-200">
             <img

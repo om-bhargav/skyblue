@@ -18,7 +18,7 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    // 🧑‍✈️ Pilots (exactly 2)
+    // 🧑‍✈️ Pilots
     defineField({
       name: "pilots",
       title: "Pilots",
@@ -71,6 +71,62 @@ export default defineType({
       title: "To",
       type: "string",
       validation: (Rule) => Rule.required(),
+    }),
+
+    // ✈️ Aircraft Specifications
+    defineField({
+      name: "specifications",
+      title: "Specifications",
+      type: "object",
+      fields: [
+        defineField({
+          name: "maximumOperatingRange",
+          title: "Maximum Operating Range (KM)",
+          type: "number",
+        }),
+        defineField({
+          name: "speed",
+          title: "Speed (Knots)",
+          type: "number",
+        }),
+        defineField({
+          name: "passengerCapacity",
+          title: "Passenger Capacity",
+          type: "string", // keeping string because of "+1 cabin server"
+        }),
+        defineField({
+          name: "endurance",
+          title: "Endurance (hrs)",
+          type: "string",
+        }),
+        defineField({
+          name: "baggageCapacity",
+          title: "Baggage Capacity (m³)",
+          type: "number",
+        }),
+        defineField({
+          name: "cruisingAltitude",
+          title: "Cruising Altitude (m)",
+          type: "number",
+        }),
+
+        // Cabin Specs
+        defineField({
+          name: "cabinLength",
+          title: "Cabin Length (m)",
+          type: "number",
+        }),
+        defineField({
+          name: "cabinWidth",
+          title: "Cabin Width (m)",
+          type: "number",
+        }),
+        defineField({
+          name: "cabinHeight",
+          title: "Cabin Height (m)",
+          type: "number",
+        }),
+      ],
     }),
   ],
 });

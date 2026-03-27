@@ -30,30 +30,14 @@ export function transformFeatures(tasks: any[]) {
     return obj;
   });
 }
-function Hero2({ ref }: { ref: any }) {
+function Hero2({isScrolled}:{isScrolled: boolean}) {
   const transition = { duration: 0.8, ease: easeInOut };
   const { data, isLoading, error } = useSWR("/api/features", fetcher);
   const features = data?.data ? transformFeatures(data.data) : [];
-  if (ref) {
-    const { scrollYProgress } = useScroll({
-      target: ref,
-      offset: ["start start", "end end"],
-    });
-    useMotionValueEvent(scrollYProgress, "change", (v) => {
-      if (v > 0.5) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    });
-  }
-  const [isScrolled, setIsScrolled] = useState(false);
+  const ref = useRef(null);
   return (
     <div
-      className="min-h-screen relative flex items-center justify-center prevent"
-      data-lenis-prevent
-      data-lenis-prevent-touch
-      data-lenis-prevent-wheel
+      className="h-screen sticky top-0 relative flex items-center overflow-hidden justify-center"
     >
       <motion.img
         src={PlaneWindow.src}
@@ -134,7 +118,7 @@ function Hero2({ ref }: { ref: any }) {
           loaderClassName="mx-auto max-w-[1200px] place-items-center w-full mt-12 min-h-[400px]"
         >
           <div
-            className="mx-auto md:pt-20 max-w-[1200px] max-h-[600px] overflow-auto max-md:py-2 grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-10 md:gap-x-20 w-full h-full items-center prevent"
+            className="mx-auto md:py-20 max-w-[1200px] max-h-[600px] overflow-auto max-md:py-2 grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-10 md:gap-x-20 w-full h-full items-center prevent"
             data-lenis-prevent
             data-lenis-prevent-touch
             data-lenis-prevent-wheel

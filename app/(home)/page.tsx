@@ -7,22 +7,18 @@ import plane from "@/assets/plane.png";
 import background from "@/assets/sky-bg.png";
 import SunnyDay from "@/assets/sunny-day.png";
 import Loader from "@/components/Loader";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useScroll,
-} from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import CTAButton from "@/components/CTAButton";
+import { useScrollSections } from "@/components/useScrollSections";
 const Navbar = dynamic(() => import("@/components/Navbar"));
-const Hero = dynamic(() => import("@/app/_components/Hero"));
-const Hero2 = dynamic(() => import("../_components/Hero2"));
-const Features = dynamic(() => import("../_components/Features"));
-const Branding1 = dynamic(() => import("../_components/Branding1"));
-const Faq = dynamic(() => import("@/app/_components/Faq"));
-const Footer = dynamic(() => import("@/components/Footer"));
+const Hero = dynamic(() => import("@/app/_components/wrappers/Hero"));
+const Hero2 = dynamic(() => import("../_components/wrappers/Hero2"));
+const Features = dynamic(() => import("../_components/wrappers/Features"));
+const Branding = dynamic(() => import("../_components/wrappers/Branding"));
+const Faq = dynamic(() => import("@/app/_components/wrappers/Faq"));
+const Footer = dynamic(() => import("@/app/_components/wrappers/Footer"));
 
 let images = [
   background.src,
@@ -41,7 +37,7 @@ export default function Home() {
   const brandingRef = useRef<HTMLElement | null>(null);
   const faqRef = useRef<HTMLElement | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [loadedAssets, setLoadedAssets] = useState(0);
   const sectionRefs = [
     heroRef,
     hero2Ref,
@@ -50,11 +46,15 @@ export default function Home() {
     faqRef,
     footerRef,
   ];
+  const totalAssets = images.length + 1;
+  const updateProgress = () => {
+    setLoadedAssets((prev) => {
+      return prev + 1;
+    });
+  };
+  const containerRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
-  const { scrollY } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
+  const progress = (loadedAssets / totalAssets) * 100;
   useEffect(() => {
     const loadAssets = async () => {
       await Promise.all(
@@ -63,102 +63,114 @@ export default function Home() {
             const img = new Image();
             img.src = image;
 
-            img.onload = () => resolve();
-            img.onerror = () => reject(); // good practice
+            img.onload = () => {
+              updateProgress();
+              resolve();
+            };
+            img.onerror = () => {
+              updateProgress();
+              reject();
+            };
           });
         })
       );
 
+      updateProgress();
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
       setLoaded(true);
     };
 
     loadAssets();
   }, []);
-  useMotionValueEvent(scrollY, "change", (y) => {
-    const triggerLine = y + window.innerHeight * 0.5;
-
-    let newIndex = -1;
-
+  const [section, setSection] = useState(1);
+  // console.log(section);
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
     sectionRefs.forEach((ref, index) => {
-      const section = ref.current;
-      if (!section) return;
+      if (!ref.current) return;
 
-      const top = section.offsetTop;
-      const bottom = top + section.offsetHeight;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setSection(index + 1);
+          }
+        },
+        {
+          root: containerRef.current,
+          threshold: 0.5, // 👈 when 60% visible = triggered
+        }
+      );
 
-      if (triggerLine >= top && triggerLine < bottom) {
-        newIndex = index;
-      }
+      observer.observe(ref.current);
+      observers.push(observer);
     });
 
-    if (newIndex !== -1) {
-      setSection(newIndex + 1);
-    }
-  });
-  const [section, setSection] = useState(1);
-  return loaded ? (
+    return () => observers.forEach((o) => o.disconnect());
+  }, [sectionRefs]);
+  useEffect(() => {
+    console.log(section);
+  }, [section]);
+  return (
     <>
+      {!loaded && <Loader progress={progress} />}
       {section !== 6 && <CTAButton />}
       <Navbar section={section} />
-      <AnimatePresence mode="sync">
-        {section !== 5 && (
-          <motion.img
-            key={[3, 4].includes(section) ? "sunny" : "sky"}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            src={[3, 4].includes(section) ? images[1] : images[0]}
-            className="w-full max-h-screen h-full fixed inset-0 -z-10 object-cover"
-            transition={{ duration: 1, ease: "easeInOut" }}
-          />
-        )}
-      </AnimatePresence>
-      <div ref={containerRef}>
-        {/* Sticky UI */}
-        <div className="sticky top-0 overflow-hidden">
-          <AnimatePresence mode="popLayout">
-            <motion.div
-              key={section}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8 }}
-              className="w-full h-full"
-            >
-              {section === 1 && <Hero />}
-              {section === 2 && <Hero2 ref={hero2Ref} />}
-              {section === 3 && <Features />}
-              {section === 4 && <Branding1 ref={brandingRef} />}
-              {section === 5 && <Faq ref={faqRef} />}
-              {section === 6 && <Footer />}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+      <motion.img
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        src={[3, 4].includes(section) ? images[1] : images[0]}
+        className={`w-full max-h-screen h-full fixed inset-0 -z-10 object-cover ${section === 5 ? "hidden" : ""}`}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      />
 
-        {/* 🔥 Scroll spacers (define heights) */}
-        <section ref={sectionRefs[0] as any} className="h-[15vh]" />
-        <section
-          ref={sectionRefs[1] as any}
-          className="min-h-[200vh] prevent"
-          data-lenis-prevent
-          data-lenis-prevent-touch
-          data-lenis-prevent-wheel
-        />
-        <section ref={sectionRefs[2] as any} className="min-h-[200vh]" />
-        <section ref={sectionRefs[3] as any} className="min-h-[350vh]" />
-        <section
-          ref={sectionRefs[4] as any}
-          className="min-h-[200vh]"
-        />
-        <section ref={sectionRefs[5] as any} className="min-h-[200vh]" />
+      <div
+        ref={containerRef}
+        className="w-full h-screen overflow-auto snap-y snap-mandatory"
+      >
+        <div
+          key={"Hero"}
+          ref={heroRef as any}
+          className="snap-start min-h-screen"
+        >
+          <Hero active={section === 1} />
+        </div>
+        <div
+          key={"Hero2"}
+          ref={hero2Ref as any}
+          className="snap-start min-h-screen"
+        >
+          <Hero2 active={section === 2} containerRef={containerRef} />
+        </div>
+        <div
+          key={"features"}
+          ref={featuresRef as any}
+          className="snap-start min-h-screen"
+        >
+          <Features active={section === 3} />
+        </div>
+        <div
+          key={"branding"}
+          ref={brandingRef as any}
+          className="snap-start min-h-screen"
+        >
+          <Branding active={section === 4} containerRef={containerRef} />
+        </div>
+        <div
+          key={"faq"}
+          ref={faqRef as any}
+          className="snap-start min-h-screen"
+        >
+          <Faq active={section === 5} />
+        </div>
+        <div
+          key={"footer"}
+          ref={footerRef as any}
+          className="snap-start min-h-screen"
+        >
+          <Footer active={section === 6} />
+        </div>
       </div>
-    </>
-  ) : (
-    <>
-      <Loader />
-      <div ref={containerRef}></div>
     </>
   );
 }
