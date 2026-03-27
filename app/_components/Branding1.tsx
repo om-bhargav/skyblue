@@ -66,11 +66,17 @@ export default function Branding1({
   const [showDetails, setShowDetails] = useState(false);
 
   const scaleValue = useSpring(
-    useTransform(scrollYProgress, [0.1, 0.5], [1, 5]),
+    useTransform(scrollYProgress, [0.1, 0.5], [1, 3]),
     {
       bounce: 0,
     }
   );
+  const yValue = useSpring(
+    useTransform(scrollYProgress,[0.1,0.5],[0,300]),
+    {
+      bounce: 0
+    }
+  )
   useMotionValueEvent(scrollYProgress, "change", (v: number) => {
     if (v > 0.6) {
       setShowDetails(true);
@@ -95,7 +101,7 @@ export default function Branding1({
       <motion.div
         initial={{ y: -500, opacity: 0, scale: 1 }}
         whileInView={{ opacity: 1 }}
-        style={{ scale: scaleValue }}
+        style={{ scale: scaleValue, y:yValue }}
         transition={{ duration: 1.7, ease: "easeInOut" }}
         viewport={{ once: false }}
         className={`absolute -top-70 z-100 max-md:hidden`}
